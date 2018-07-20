@@ -1,6 +1,6 @@
 /* ATTINY 84*/
 
-#define F_CPU 1000000UL  
+#define F_CPU 8000000UL  
 #include <avr/io.h> 
 #include <stdio.h> 
 #include <util/delay.h> 
@@ -16,8 +16,9 @@ int main (void){
 	init(); 
 	ADCinit();
 	while (1){  
-		ADCSRA |= (1 << ADSC); //enabling the adc 
-		loop_until_bit_is_clear(ADCSRA, ADSC); //wait until convo is done 
+		ADCSRA |= (1 << ADSC); //enabling the adc  
+		while (ADCSRA & (1 << ADSC)); /*looping till convo, ends 
+		can also use an interrerupt for this instead and just the adcValue = ADC in the ISR*/
 		adcValue = ADC; 
 		ledValue = (adcValue >> 2); //converting 10bit to 8bit by shifting down 2 bits
 		dutycycle = ledValue; 
@@ -37,8 +38,12 @@ void init () {
 } 
 
 void ADCinit() { 
-	ADMUX |= (1 << REFS1);//internal voltage reference of 1.1V, no voltage to AD0
-	ADCSRA |= (1 << ADPS1)/*prescaler of 4*/ | (1 << ADEN); /*Enable ADC*/ 
+	ADMUX &=~ ((1 << REFS1) | (1 << REFS0));//Vcc as analog voltage reference 
+	ADMUX |= (1 << MUX1); //Using pin ADC1 (PA1)
+	ADCSRA |= (1 << ADPS1)|(1 << ADPS2)|(1 << ADEN); /*Prescaler of 8, enable ADC*/   
+//	ADCSRB &=~ ( (1 << ADTS2) | (1 << ADTS1) | (1 << ADTS0) );//free running mode
+	DIDR0 |= (1 << ADC1D); /*Disables the digital buffer of the analog pin being used (ADC1D), 
+	reduces power consumption*/
 
 }  
 

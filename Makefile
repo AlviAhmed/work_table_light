@@ -1,8 +1,8 @@
 DEVICE     = attiny84
-CLOCK      = 1000000
+CLOCK      = 8000000
 PROGRAMMER = -c avrisp2  -b 32400
 OBJECTS    = main_analog.c
-FUSES      = -U lfuse:w:0xe2:m -U hfuse:w:0xd9:m -U efuse:w:0xff:m
+FUSES      = -U lfuse:w:0xe2:m -U hfuse:w:0xdf:m -U efuse:w:0xff:m  
 
 # Tune the lines below only if you know what you are doing:
 
