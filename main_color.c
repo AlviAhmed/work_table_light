@@ -33,7 +33,7 @@
 
 
                 while (1){
-			_delay_ms(15);
+			_delay_ms(1);
 
 			tempred = ( colourarray[i][0]);
 			tempgreen = ( colourarray[i][1]);
@@ -50,12 +50,12 @@
                         if(blueduty > tempblue) {blueduty --;}
 
 
-                if ((redduty == tempred) && (greenduty == tempgreen) && (blueduty == tempblue)){
-                        i++;
-                        if (i > numcolour){
-                                i = 0;
-                        }
-                }
+			if ((redduty == tempred) && (greenduty == tempgreen) && (blueduty == tempblue)){
+				i++;
+				if (i > numcolour){
+					i = 0;
+				}
+			}
 
 
 
@@ -96,4 +96,3 @@
                 OCR1A = blueduty;
         }
 
-~          
