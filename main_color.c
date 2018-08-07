@@ -14,7 +14,7 @@
     {0,255,0},
     {0,0,255}
     }; 	 
-    unsigned int adcval; 
+    unsigned int adcval = 0; 
     unsigned int curradc = 0;
     unsigned volatile int redduty = 0;
     unsigned volatile int greenduty = 0;
@@ -29,44 +29,47 @@
                 unsigned int tempgreen;
                 unsigned int tempblue;
 
-                while (1){
-			_delay_ms(1);  
-/*
-			if (curradc < adcval){ //cur value is the previous adcval, is less that newely update val, adc decreasing 
-				tempadc --;
-				curradc = adcval; //now make curradc the current adcval for future comparisons		
-			}  
-			if (curradc > adcval){ 
-				tempadc ++; 
-				curradc = adcval;
+		tempred = ( colourarray[i][0]);
+		tempgreen = ( colourarray[i][1]);
+		tempblue = ( colourarray[i][2]);     
+		while (1){
+			_delay_ms(1);   
+			if (adcval >= 5){ //red 
+				redduty = 0;  
+				blueduty = 0; 
+				greenduty = 0;	
+					
+			} 
+			if (adcval > 6 && adcval < 45){ 
+				redduty = 255;  
+				blueduty = 0; 
+				greenduty = 0;	
+
 			}
-*/			 
-
-			tempred = ( colourarray[i][0]);
-			tempgreen = ( colourarray[i][1]);
-			tempblue = ( colourarray[i][2]);
-
-			if(redduty < tempred){redduty += tempadc;}
-			if(redduty > tempred){redduty -= tempadc;}
-
-
-                        if (greenduty < tempgreen){greenduty += tempadc;}
-                        if(greenduty > tempgreen) {greenduty -= tempadc;}
-
-                        if (blueduty < tempblue){blueduty += tempadc;}
-                        if(blueduty > tempblue) {blueduty -= tempadc;}
-
-
-			if ((redduty == tempred) && (greenduty == tempgreen) && (blueduty == tempblue)){
-				i++; 
-				if (i > numcolour){
-					i = 0; 
-				}
+			if ( adcval > 46 && adcval < 85){//red to green 
+				redduty = 255 - (adcval*3); 
+				greenduty = 255 - redduty; 
+				blueduty = 0;
+			} 
+			if (adcval > 85 && adcval < 170){//green to blue
+				redduty = 0; 
+				greenduty = 255 - (adcval*3); 
+				blueduty = 255 - greenduty;
+						
+			} 
+			if (adcval > 170 && adcval < 255){//blue to red 
+				redduty = 255 - blueduty; 
+				greenduty = 0; 
+				blueduty = 255 - (adcval*3);
+			} 
+			if ( adcval >= 250){ 
+				redduty = 255;  
+				blueduty = 0; 
+				greenduty = 0;	
+									
 			}
-
-
-
-                }
+		}			 
+                
         }
 
 
@@ -90,8 +93,8 @@
   void ADCinit(){  
             DDRA &=~ (1 << PA1); //setting this pin an input for pot 
 	    ADMUX &=~ ((1 << REFS1) | (1 << REFS0));//Vcc as analog voltage reference
-	    ADMUX |= (1 << MUX0); //Using pin ADC1 (PA1)
-	    ADCSRA |= (1 << ADPS1)|(1 << ADPS2)|(1 << ADEN)|(1 << ADIE); /*Prescaler of 64, enable ADC, enable interrupt*/
+	    ADMUX |= (1 << MUX0); //Using pin ADC1 (PA1) 
+	    ADCSRA |= (1 << ADPS1)|(1 << ADPS2)|(1 << ADEN)|(1 << ADATE) | (1 << ADSC) | (1 << ADIE); /*Prescaler of 64, enable ADC*/
 	    ADCSRB |= (1 << ADLAR); //left adjust bits, since working with 8bit fast pwm
 	    DIDR0 |= (1 << ADC1D); /*Disables the digital buffer of the analog pin being used (ADC1D), reduces power consumption*/ 
 	    startconvo();
@@ -102,13 +105,13 @@
   } 
 
 	ISR(ADC_vect){ 
-	 	adcval  = ADCH; 
+	 adcval  = ADCH;  
 		
 	}
  
 
          ISR(TIM0_OVF_vect){ //update dutycycle value at end of PWM cycle
-	        OCR0A = redduty;
+	       OCR0A = redduty;
                 OCR0B = greenduty;
         }
 
