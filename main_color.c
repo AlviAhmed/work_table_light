@@ -21,7 +21,7 @@
     unsigned volatile int blueduty = 0;
     unsigned volatile int i = 0; 
     unsigned int tempadc = 3; 
-
+    unsigned int maxcol = 255;
     int main (void) {
                 init(); 
 
@@ -33,41 +33,31 @@
 		tempgreen = ( colourarray[i][1]);
 		tempblue = ( colourarray[i][2]);     
 		while (1){
-			_delay_ms(1);   
-			if (adcval >= 5){ //red 
-				redduty = 0;  
+			_delay_ms(10);   
+			if (adcval <= 30){ //red 
+				redduty = maxcol;  
+				greenduty = maxcol - 155;	 
 				blueduty = 0; 
-				greenduty = 0;	
+				
 					
 			} 
-			if (adcval > 6 && adcval < 45){ 
-				redduty = 255;  
-				blueduty = 0; 
-				greenduty = 0;	
 
-			}
-			if ( adcval > 46 && adcval < 85){//red to green 
-				redduty = 255 - (adcval*3); 
-				greenduty = 255 - redduty; 
+			if ( adcval > 30 && adcval <= 85){//red to green 
+				redduty = maxcol - (adcval*3); 
+				greenduty = maxcol - redduty; 
 				blueduty = 0;
 			} 
-			if (adcval > 85 && adcval < 170){//green to blue
+			if (adcval > 85 && adcval <= 170){//green to blue
+				greenduty = maxcol - (adcval*3); 
+				blueduty = maxcol - greenduty;
 				redduty = 0; 
-				greenduty = 255 - (adcval*3); 
-				blueduty = 255 - greenduty;
 						
 			} 
-			if (adcval > 170 && adcval < 255){//blue to red 
-				redduty = 255 - blueduty; 
+			if (adcval > 170 && adcval <= 255){//blue to red  
+				blueduty = maxcol - (adcval*3);
+				redduty = maxcol - blueduty; 
 				greenduty = 0; 
-				blueduty = 255 - (adcval*3);
 			} 
-			if ( adcval >= 250){ 
-				redduty = 255;  
-				blueduty = 0; 
-				greenduty = 0;	
-									
-			}
 		}			 
                 
         }
