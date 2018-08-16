@@ -1,4 +1,4 @@
-/* ATTINY 84*/
+//TRYING TO GET ADC TO WORK 
 
 #define F_CPU 8000000UL
 #include <avr/io.h>

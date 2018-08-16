@@ -1,66 +1,69 @@
-    #define F_CPU 8000000UL
+//GETTING COLOURS TO WORK WITH POT
+#define F_CPU 8000000UL
 
-    #include <avr/io.h>
-    #include <stdio.h>
-    #include <util/delay.h>
-    #include <avr/interrupt.h>
-    #define numcolour 3
+#include <avr/io.h>
+#include <stdio.h>
+#include <util/delay.h>
+#include <avr/interrupt.h>
+#define numcolour 3
 
 
 
-    unsigned volatile int colourarray[numcolour][3] =
-    {
-    {255,0,0},
-    {0,255,0},
-    {0,0,255}
-    }; 	 
-    unsigned int adcval = 0; 
-    unsigned int curradc = 0;
-    unsigned volatile int redduty = 0;
-    unsigned volatile int greenduty = 0;
-    unsigned volatile int blueduty = 0;
-    unsigned volatile int i = 0; 
-    unsigned int tempadc = 3; 
-    unsigned int maxcol = 255;
-    int main (void) {
-                init(); 
+unsigned volatile int colourarray[numcolour][3] =
+{
+{255,0,0},
+{0,255,0},
+{0,0,255}
+}; 	 
+unsigned int adcval = 0; 
+unsigned int curradc = 0;
+unsigned volatile int redduty = 0;
+unsigned volatile int greenduty = 0;
+unsigned volatile int blueduty = 0;
+unsigned volatile int i = 0; 
+unsigned int tempadc = 3; 
+unsigned int maxcol = 255;
+int main (void) {
+	init(); 
 
-                unsigned int tempred;
-                unsigned int tempgreen;
-                unsigned int tempblue;
+        unsigned int tempred;
+        unsigned int tempgreen;
+        unsigned int tempblue;
 
-		tempred = ( colourarray[i][0]);
-		tempgreen = ( colourarray[i][1]);
-		tempblue = ( colourarray[i][2]);     
-		while (1){
-			_delay_ms(10);   
-			if (adcval <= 30){ //red 
-				redduty = maxcol;  
-				greenduty = maxcol - 155;	 
-				blueduty = 0; 
-				
-					
-			} 
+	tempred = ( colourarray[i][0]);
+	tempgreen = ( colourarray[i][1]);
+	tempblue = ( colourarray[i][2]);      
 
-			if ( adcval > 30 && adcval <= 85){//red to green 
-				redduty = maxcol - (adcval*3); 
-				greenduty = maxcol - redduty; 
-				blueduty = 0;
-			} 
-			if (adcval > 85 && adcval <= 170){//green to blue
-				greenduty = maxcol - (adcval*3); 
-				blueduty = maxcol - greenduty;
-				redduty = 0; 
-						
-			} 
-			if (adcval > 170 && adcval <= 255){//blue to red  
-				blueduty = maxcol - (adcval*3);
-				redduty = maxcol - blueduty; 
-				greenduty = 0; 
-			} 
-		}			 
-                
-        }
+	while (1){
+	       _delay_ms(1);   
+	       if (adcval <= 30){ //red 
+		       redduty = maxcol;  
+		       greenduty = maxcol - 155;	 
+		       blueduty = 0; 
+	       } 
+	       if ( adcval > 30 && adcval <= 85){//red to green 
+			redduty = maxcol - (adcval*3); 
+			greenduty = maxcol - redduty; 
+			blueduty = 0;
+	       } 
+	       if (adcval > 85 && adcval <= 170){//green to blue
+			greenduty = maxcol - (adcval*3); 
+			blueduty = maxcol - greenduty;
+			redduty = 0; 
+	       			
+	       } 
+	       if (adcval > 170 && adcval <= 240){//blue to red  
+			blueduty = maxcol - (adcval*3);
+			redduty = maxcol - blueduty; 
+			greenduty = 0; 
+	       }  
+	       if (adcval >= 250){ 
+			redduty = maxcol; 
+			blueduty = 0; 
+			greenduty = 0;			
+               }
+	}			 
+}
 
 
 

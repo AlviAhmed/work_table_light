@@ -1,3 +1,4 @@
+//GETTING COLOR MODES TO WORK
 #define F_CPU 8000000UL 
 #include <stdio.h> 
 #include <avr/io.h>  
