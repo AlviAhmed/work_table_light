@@ -23,10 +23,11 @@ unsigned volatile int tempred = colourarray[i][0];
 unsigned volatile int tempgreen = colourarray[i][1];
 unsigned volatile int tempblue = colourarray[i][2];
 
-int main (void) {
-       init();
-       while (1){
-               _delay_ms(1); 
+int main (void) { 
+	init();   
+	pinint();
+	while (1){
+		_delay_ms(1); 
 		while (cho == 1){ 
 			choice();
 		}  
@@ -103,9 +104,28 @@ void fade () {
 	} 
 } 
 
-void nightmode () { 
-	redduty = 255; 
-	greenduty = 0; 
-	blueduty = 0;
-
+void pinint() {
+        GIMSK |= (1 << PCIE1); //enabling pin change interrupt
+        PCMSK1 |= (1 << PB0) | (1 << PB1); //specifying the pins that cause interrupt 
+        sei();
 }
+
+ISR (PCINT1_vect){ //PCINT1 takes care of pins PCINT11:8 
+        _delay_ms(5);
+        if (partpress && (partbut == 0)){//turning on first led 
+                PORTA ^= (1 << PA2); //turns on led
+                partbut = 1;
+        }
+        else{
+                partbut = 0;
+        }
+
+        if (colpress && (colbut == 0)){//turning on first led 
+                PORTA ^= (1 << PA3); //turns on led
+                colbut = 1;
+        }
+        else{
+                colbut = 0;
+        }
+}
+     
