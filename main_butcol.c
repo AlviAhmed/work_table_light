@@ -6,15 +6,15 @@
 #include <util/delay.h>
 #include <avr/interrupt.h>
 #define numcolour 3
-#define colpress (~PINB) & (_BV(0)) //PB0 
+#define redpress (~PINB) & (_BV(0)) //PB0 
 #define partpress (~PINB) & (_BV(1)) //PB1 
 
 
 unsigned volatile int colourarray[numcolour][3] =
 {
-{255,0,0},
-{0,255,0},
-{0,0,255}
+{250,0,0},
+{0,250,0},
+{0,0,250}
 }; 	  
 
 unsigned int adcval = 0; 
@@ -32,23 +32,86 @@ int redenable = 0;
 int partbut = 0;
 int partenable = 0;
 
+unsigned int tempred;
+unsigned int tempgreen;
+unsigned int tempblue;
+
+
+
+void potenable(){  
+	       _delay_ms(1);   
+	       if (adcval <= 30){ //red 
+		       redduty = maxcol;  
+		       greenduty = maxcol - 155;	 
+		       blueduty = 0; 
+	       } 
+	       if ( adcval > 30 && adcval <= 85){//red to green 
+			redduty = maxcol - (adcval*3); 
+			greenduty = maxcol - redduty; 
+			blueduty = 0;
+	       } 
+	       if (adcval > 85 && adcval <= 170){//green to blue
+			greenduty = maxcol - (adcval*3); 
+			blueduty = maxcol - greenduty;
+			redduty = 0; 
+	       			
+	       } 
+	       if (adcval > 170 && adcval <= 240){//blue to red  
+			blueduty = maxcol - (adcval*3);
+			redduty = maxcol - blueduty; 
+			greenduty = 0; 
+	       }  
+	       if (adcval >= 250){ 
+			redduty = maxcol; 
+			blueduty = 0; 
+			greenduty = 0;			
+               }
+	
+} 
+
+void redlight(){ 
+	redduty = 255; 
+	greenduty = 0; 
+	blueduty = 0;
+} 
+
+void partylight(){ 
+	_delay_us(10); 
+	tempred = ( colourarray[i][0]);
+	tempgreen = ( colourarray[i][1]);
+	tempblue = ( colourarray[i][2]);       
+
+	if(redduty < tempred) {redduty ++ ;}
+	if(redduty > tempred){redduty --;}
+
+	if (greenduty < tempgreen){greenduty ++;}
+	if(greenduty > tempgreen) {greenduty --;}
+
+	if (blueduty < tempblue){blueduty ++;}
+	if(blueduty > tempblue){blueduty --;}
+
+	if ((redduty == tempred) && (greenduty == tempgreen) && (blueduty == tempblue)){
+		i++;
+		if (i > numcolour){
+			i = 0;
+		}
+	}
+}
+
 
 
 int main (void) {
 	init(); 
 
-        unsigned int tempred;
-        unsigned int tempgreen;
-        unsigned int tempblue;
-
-	tempred = ( colourarray[i][0]);
-	tempgreen = ( colourarray[i][1]);
-	tempblue = ( colourarray[i][2]);      
 
 	while (1){ 
-		_delay_us(1); 
-		if (partenable == 1){ 
-			partylight();
+		if (partenable == 1){  
+			redduty = 0; 
+			greenduty = 0; 
+			blueduty = 0; 
+			while (partenable){
+				partylight(); 
+			}
                 } 
                 if (redenable == 1){
 			redlight();
@@ -102,67 +165,6 @@ void startconvo(){
       ADCSRA |= (1 << ADSC); //start convo
 }   
 
-
-
-void potenable(){  
-	       _delay_ms(1);   
-	       if (adcval <= 30){ //red 
-		       redduty = maxcol;  
-		       greenduty = maxcol - 155;	 
-		       blueduty = 0; 
-	       } 
-	       if ( adcval > 30 && adcval <= 85){//red to green 
-			redduty = maxcol - (adcval*3); 
-			greenduty = maxcol - redduty; 
-			blueduty = 0;
-	       } 
-	       if (adcval > 85 && adcval <= 170){//green to blue
-			greenduty = maxcol - (adcval*3); 
-			blueduty = maxcol - greenduty;
-			redduty = 0; 
-	       			
-	       } 
-	       if (adcval > 170 && adcval <= 240){//blue to red  
-			blueduty = maxcol - (adcval*3);
-			redduty = maxcol - blueduty; 
-			greenduty = 0; 
-	       }  
-	       if (adcval >= 250){ 
-			redduty = maxcol; 
-			blueduty = 0; 
-			greenduty = 0;			
-               }
-	
-} 
-
-void redlight(){ 
-	redduty = 255; 
-	greenduty = 0; 
-	blueduty = 0;
-} 
-
-void partylight(){ 
-	_delay_ms(15);
-	tempred = ( colourarray[i][0]);
-	tempgreen = ( colourarray[i][1]);
-	tempblue = ( colourarray[i][2]);
-
-	if(redduty < tempred) {redduty ++ ;}
-	if(redduty > tempred){redduty --;}
-
-	if (greenduty < tempgreen){greenduty ++;}
-	if(greenduty > tempgreen) {greenduty --;}
-
-	if (blueduty < tempblue){blueduty ++;}
-	if(blueduty > tempblue){blueduty --;}
-
-	if ((redduty == tempred) && (greenduty == tempgreen) && (blueduty == tempblue)){
-		i++;
-		if (i > numcolour){
-			i = 0;
-		}
-	}
-}
 
 ISR(ADC_vect){ 
 	adcval  = ADCH;  
