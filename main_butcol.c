@@ -5,16 +5,38 @@
 #include <stdio.h>
 #include <util/delay.h>
 #include <avr/interrupt.h>
-#define numcolour 3
+#define numcolour 24
 #define redpress (~PINB) & (_BV(0)) //PB0 
 #define partpress (~PINB) & (_BV(1)) //PB1 
 
 
 unsigned volatile int colourarray[numcolour][3] =
 {
-{250,0,0},
-{0,250,0},
-{0,0,250}
+{255,0,0}, 
+{232,12,122}, 
+{253,13,255}, 
+{167,0,232}, 
+{114,0,255}, 
+{50,12,232}, 
+{13,36,255}, 
+{0,83,232}, 
+{0,159,255}, 
+{12,207,232}, 
+{12,207,232}, 
+{13,255,216}, 
+{0,232,129}, 
+{0,255,70}, 
+{14,232,12}, 
+{100,255,13}, 
+{164,232,0}, 
+{255,251,0}, 
+{232,206,12}, 
+{255,202,13}, 
+{232,158,0}, 
+{255,147,0}, 
+{232,107,12}, 
+{255,82,13}, 
+{232,34,1},
 }; 	  
 
 unsigned int adcval = 0; 
@@ -76,7 +98,7 @@ void redlight(){
 } 
 
 void partylight(){ 
-	_delay_us(10); 
+	_delay_ms(1); 
 	tempred = ( colourarray[i][0]);
 	tempgreen = ( colourarray[i][1]);
 	tempblue = ( colourarray[i][2]);       
@@ -196,11 +218,11 @@ ISR (PCINT1_vect){ //PCINT1 takes care of pins PCINT11:8
                 redbut = 0;
         }
         if (partpress && redpress && partbut == 0 && redbut == 0){//if both buttons pressed, default to one of them  
-                redenable = 0;
-                partenable = !partenable;
-                partbut = 1;
+                partenable = 0;
+                redenable = !redenable;
+                redbut = 1;
         }else {
-                partbut = 0;
+                redbut = 0;
         }
 
 }
