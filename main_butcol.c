@@ -199,7 +199,7 @@ ISR(TIM1_OVF_vect){ //update dutycycle value at end of PWM cycle
         OCR1A = blueduty;
 }
 ISR (PCINT1_vect){ //PCINT1 takes care of pins PCINT11:8    
-	       _delay_ms(5);
+	       _delay_ms(1);
         if (partpress &&  partbut == 0 ){
                 redenable = 0;
                 partenable = !partenable;//toggling value instead of LED 
