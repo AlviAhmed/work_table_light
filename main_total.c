@@ -1,4 +1,3 @@
-//GETTING COLOURS TO WORK WITH POT
 #define F_CPU 8000000UL
 
 #include <avr/io.h>
