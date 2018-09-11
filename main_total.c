@@ -123,8 +123,9 @@ void potenable(){
         }
 }
 
-void redlight(){ 
-	redduty = 255; 
+void redlight(){  
+	lightbuffer = 0;//night mode so no more white light   
+	redduty = 255;  
 	greenduty = 0; 
 	blueduty = 0;
 } 
@@ -159,7 +160,7 @@ int main (void) {
 
 
 	while (1){ 
-		if (partenable == 1){  
+		if (partenable == 1){    
 			redduty = 0; 
 			greenduty = 0; 
 			blueduty = 0; 
@@ -170,7 +171,7 @@ int main (void) {
 		if (redenable == 1){
 			redlight();
 		}
-		if (partenable != 1 && redenable != 1){ 
+		if (partenable != 1 && redenable != 1){   
 			potenable();
 		}
 
