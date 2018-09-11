@@ -15,11 +15,16 @@ unsigned volatile int colourarray[numcolour][3] =
 {0,255,0},
 {0,0,255}
 }; 	 
-unsigned int adcval = 0; 
-unsigned int curradc = 0;
+unsigned int adcval[3]; 
+unsigned int curradc = 0; 
+
 unsigned volatile int redduty = 0;
 unsigned volatile int greenduty = 0;
-unsigned volatile int blueduty = 0;
+unsigned volatile int blueduty = 0; 
+unsigned volatile int lightbuffer = 255; 
+
+unsigned volatile int channel = 1;
+
 unsigned volatile int i = 0; 
 unsigned int tempadc = 3; 
 unsigned int maxcol = 255;
@@ -35,33 +40,34 @@ int main (void) {
 	tempblue = ( colourarray[i][2]);      
 
 	while (1){
-	       _delay_ms(1);   
-	       if (adcval <= 30){ //red 
-		       redduty = maxcol;  
-		       greenduty = maxcol - 155;	 
-		       blueduty = 0; 
-	       } 
-	       if ( adcval > 30 && adcval <= 85){//red to green 
-			redduty = maxcol - (adcval*3); 
-			greenduty = maxcol - redduty; 
-			blueduty = 0;
-	       } 
-	       if (adcval > 85 && adcval <= 170){//green to blue
-			greenduty = maxcol - (adcval*3); 
-			blueduty = maxcol - greenduty;
-			redduty = 0; 
-	       			
-	       } 
-	       if (adcval > 170 && adcval <= 240){//blue to red  
-			blueduty = maxcol - (adcval*3);
-			redduty = maxcol - blueduty; 
-			greenduty = 0; 
-	       }  
-	       if (adcval >= 250){ 
-			redduty = maxcol; 
-			blueduty = 0; 
-			greenduty = 0;			
-               }
+	       _delay_ms(1);    
+		  if (adcval[1] >= 30){ //red 
+                redduty = maxcol;
+                greenduty = maxcol - 155;
+                blueduty = 0;
+		}
+		if ( adcval[1] > 30 && adcval[1] <= 85){//red to green 
+			 redduty = maxcol - (adcval[1]*3);
+			 greenduty = maxcol - redduty;
+			 blueduty = 0;
+		}
+		if (adcval[1] > 85 && adcval[1] <= 170){//green to blue
+			 greenduty = maxcol - (adcval[1]*3);
+			 blueduty = maxcol - greenduty;
+			 redduty = 0;
+
+		}
+		if (adcval[1] > 170 && adcval[1] <= 240){//blue to red  
+			 blueduty = maxcol - (adcval[1]*3);
+			 redduty = maxcol - blueduty;
+			 greenduty = 0;
+		}
+		if (adcval[1] >= 250){
+			 redduty = maxcol;
+			 blueduty = 0;
+			 greenduty = 0;
+		}
+
 	}			 
 }
 
@@ -72,10 +78,10 @@ int main (void) {
 
 void init(){
     	DDRB |=  (1 << PB2); //OCOA 
-    	DDRA |= (1 << PA7) | (1 << PA6);//OCOB, OC1A respectively 
+    	DDRA |= (1 << PA7) | (1 << PA6) | (1 << PA5);//OCOB, OC1A respectively 
             TCCR0A |= ( (1 << COM0A1) | (1 << COM0B1) | (1 << WGM01) | (1 << WGM00));// OCOA, OCOB, non-inverting, fast pwm 
     	TIMSK0 |= (1 << TOIE0); //Timer mask for Timer/Counter 0  
-    	TCCR1A |= ( (1 << COM1A1) | (1 << WGM10) | (1 << WGM12) ); //OC1A, non-inverting, fast 8-bit pwm, for blue pin 
+    	TCCR1A |= ( (1 << COM1A1) | (1 << WGM10) | (1 << WGM12) | (1 << COM1B1)); //OC1A, non-inverting, fast 8-bit pwm, for blue pin 
     	TIMSK1 |= (1 << TOIE1); //Timer mask for Timer/Counter 1  
     	ADCinit(); 
             sei(); 
@@ -84,7 +90,7 @@ void init(){
 } 
 
 void ADCinit(){  
-          DDRA &=~ (1 << PA1); //setting this pin an input for pot 
+          DDRA &=~ (1 << PA1) | (1 << PA2); //setting this pin an input for pot 
           ADMUX &=~ ((1 << REFS1) | (1 << REFS0));//Vcc as analog voltage reference
           ADMUX |= (1 << MUX0); //Using pin ADC1 (PA1) 
           ADCSRA |= (1 << ADPS1)|(1 << ADPS2)|(1 << ADEN)|(1 << ADATE) | (1 << ADSC) | (1 << ADIE); /*Prescaler of 64, enable ADC*/
@@ -98,7 +104,13 @@ void startconvo(){
 } 
 
 ISR(ADC_vect){ 
- adcval  = ADCH;  
+ adcval[channel] = ADCH;
+        channel ++;
+        if (channel > 2){
+                channel = 1;
+        }
+        ADMUX = (ADMUX & 0b11000000) | channel;
+        lightbuffer = adcval[2];
 	
 }
 
@@ -109,6 +121,7 @@ ISR(ADC_vect){
 }
 
 ISR(TIM1_OVF_vect){ //update dutycycle value at end of PWM cycle 
-        OCR1A = blueduty;
+        OCR1A = blueduty; 
+	OCR1B = lightbuffer;
 }
 
