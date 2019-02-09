@@ -44,7 +44,7 @@ unsigned int curradc = 0;
 unsigned volatile int redduty = 0;
 unsigned volatile int greenduty = 0;
 unsigned volatile int blueduty = 0; 
-unsigned volatile int lightbuffer = 150;
+unsigned volatile int lightbuffer;
 unsigned volatile int i = 0; 
 unsigned int tempadc = 3; 
 unsigned int maxcol = 255; 
@@ -229,7 +229,7 @@ ISR(ADC_vect){
                 channel = 1;
         }
         ADMUX = (ADMUX & 0b11000000) | channel;
-        lightbuffer = adcval[2];
+        lightbuffer = adcval[2]; //immediately update the light duty cycle, might be a mistake, may want to update with RGB duty cycle
 
 }
 ISR(TIM0_OVF_vect){ //update dutycycle value at end of PWM cycle
