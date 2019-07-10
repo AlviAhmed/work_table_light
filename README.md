@@ -1,4 +1,6 @@
 
+# Work Table Light 
+
 The goal is to learn more about ADC as well create a custom and unique work table light since I need a light that can cover my whole work table as well as have other functions that I need.
 
 A table light must obviously be bright, therefore planning to use a white led strip for the main lighting which can be dimmed using a dimmer switch.
