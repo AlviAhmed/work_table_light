@@ -7646,10 +7646,10 @@ The leds used in practice are 3014 white led strips with 204 leds/m.
 <net name="PB2(OC0A)" class="0">
 <segment>
 <pinref part="IC1" gate="1" pin="(PCINT10/INT0/OC0A/CKOUT)PB2"/>
-<wire x1="86.36" y1="68.58" x2="139.7" y2="68.58" width="0.1524" layer="91"/>
-<wire x1="139.7" y1="68.58" x2="139.7" y2="99.06" width="0.1524" layer="91"/>
+<wire x1="86.36" y1="68.58" x2="147.32" y2="68.58" width="0.1524" layer="91"/>
+<wire x1="147.32" y1="68.58" x2="147.32" y2="99.06" width="0.1524" layer="91"/>
 <pinref part="T1" gate="G1" pin="B"/>
-<wire x1="139.7" y1="99.06" x2="152.4" y2="99.06" width="0.1524" layer="91"/>
+<wire x1="147.32" y1="99.06" x2="152.4" y2="99.06" width="0.1524" layer="91"/>
 <label x="86.36" y="68.58" size="1.778" layer="95"/>
 </segment>
 </net>
@@ -7716,11 +7716,11 @@ The leds used in practice are 3014 white led strips with 204 leds/m.
 <net name="PA7(OCOB)" class="0">
 <segment>
 <pinref part="T2" gate="G1" pin="B"/>
-<wire x1="142.24" y1="83.82" x2="152.4" y2="83.82" width="0.1524" layer="91"/>
-<wire x1="142.24" y1="58.42" x2="142.24" y2="83.82" width="0.1524" layer="91"/>
+<wire x1="149.86" y1="83.82" x2="152.4" y2="83.82" width="0.1524" layer="91"/>
+<wire x1="149.86" y1="58.42" x2="149.86" y2="83.82" width="0.1524" layer="91"/>
 <label x="86.36" y="58.42" size="1.778" layer="95"/>
 <pinref part="IC1" gate="1" pin="(PCINT7/ICP/OC0B/ADC7)PA7"/>
-<wire x1="86.36" y1="58.42" x2="142.24" y2="58.42" width="0.1524" layer="91"/>
+<wire x1="86.36" y1="58.42" x2="149.86" y2="58.42" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="PA6(OC1A,MOSI)" class="0">

@@ -7394,9 +7394,9 @@ The leds used in practice are 3014 white led strips with 204 leds/m.
 <attribute name="VCC1" x="256.54" y="40.64" size="1.778" layer="96"/>
 </instance>
 <instance part="S4" gate="G$1" x="167.64" y="60.96" rot="R270"/>
-<instance part="S5" gate="G$1" x="104.14" y="81.28" rot="R90"/>
-<instance part="S6" gate="G$1" x="111.76" y="81.28" rot="R90"/>
-<instance part="GND8" gate="1" x="116.84" y="76.2"/>
+<instance part="S5" gate="G$1" x="109.22" y="81.28" rot="R90"/>
+<instance part="S6" gate="G$1" x="116.84" y="81.28" rot="R90"/>
+<instance part="GND8" gate="1" x="121.92" y="76.2"/>
 </instances>
 <busses>
 </busses>
@@ -7530,6 +7530,15 @@ The leds used in practice are 3014 white led strips with 204 leds/m.
 <segment>
 <pinref part="GND4" gate="1" pin="GND"/>
 <wire x1="172.72" y1="60.96" x2="172.72" y2="55.88" width="0.1524" layer="91"/>
+</segment>
+<segment>
+<pinref part="S5" gate="G$1" pin="2"/>
+<pinref part="S6" gate="G$1" pin="2"/>
+<wire x1="109.22" y1="86.36" x2="116.84" y2="86.36" width="0.1524" layer="91"/>
+<wire x1="116.84" y1="86.36" x2="121.92" y2="86.36" width="0.1524" layer="91"/>
+<wire x1="121.92" y1="86.36" x2="121.92" y2="78.74" width="0.1524" layer="91"/>
+<junction x="116.84" y="86.36"/>
+<pinref part="GND8" gate="1" pin="GND"/>
 </segment>
 </net>
 <net name="N$3" class="0">
@@ -7819,27 +7828,17 @@ The leds used in practice are 3014 white led strips with 204 leds/m.
 <net name="N$2" class="0">
 <segment>
 <pinref part="IC1" gate="1" pin="(PCINT9/XTAL2)PB1"/>
-<wire x1="86.36" y1="66.04" x2="104.14" y2="66.04" width="0.1524" layer="91"/>
+<wire x1="86.36" y1="66.04" x2="109.22" y2="66.04" width="0.1524" layer="91"/>
 <pinref part="S5" gate="G$1" pin="1"/>
-<wire x1="104.14" y1="66.04" x2="104.14" y2="76.2" width="0.1524" layer="91"/>
+<wire x1="109.22" y1="66.04" x2="109.22" y2="76.2" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$4" class="0">
 <segment>
 <pinref part="IC1" gate="1" pin="(PCINT8/XTAL1/CLKI)PB0"/>
 <pinref part="S6" gate="G$1" pin="1"/>
-<wire x1="86.36" y1="63.5" x2="111.76" y2="63.5" width="0.1524" layer="91"/>
-<wire x1="111.76" y1="63.5" x2="111.76" y2="76.2" width="0.1524" layer="91"/>
-</segment>
-</net>
-<net name="N$5" class="0">
-<segment>
-<pinref part="S5" gate="G$1" pin="2"/>
-<pinref part="S6" gate="G$1" pin="2"/>
-<wire x1="104.14" y1="86.36" x2="111.76" y2="86.36" width="0.1524" layer="91"/>
-<wire x1="111.76" y1="86.36" x2="116.84" y2="86.36" width="0.1524" layer="91"/>
-<wire x1="116.84" y1="86.36" x2="116.84" y2="78.74" width="0.1524" layer="91"/>
-<junction x="111.76" y="86.36"/>
+<wire x1="86.36" y1="63.5" x2="116.84" y2="63.5" width="0.1524" layer="91"/>
+<wire x1="116.84" y1="63.5" x2="116.84" y2="76.2" width="0.1524" layer="91"/>
 </segment>
 </net>
 </nets>

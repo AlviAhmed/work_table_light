@@ -7325,6 +7325,9 @@ The leds used in practice are 3014 white led strips with 204 leds/m.
  scroll through the colors of the RGB led strip
 
 </text>
+<text x="109.22" y="96.52" size="1.778" layer="91">Push buttons for the different 
+
+modes of the work table light</text>
 </plain>
 <instances>
 <instance part="IC1" gate="1" x="35.56" y="55.88"/>
