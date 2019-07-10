@@ -1,4 +1,4 @@
-//GETTING COLOURS TO WORK WITH POT
+//GETTING COLOURS TO WORK WITH POT, edit (April 20, 2019): working code as of now
 #define F_CPU 8000000UL
 
 #include <avr/io.h>
@@ -60,40 +60,6 @@ unsigned int tempred;
 unsigned int tempgreen;
 unsigned int tempblue;
 
-
-/*
-void potenable(){  
-	_delay_ms(1);   
-	if (adcval <= 30){ //red 
-		redduty = maxcol;  
-		greenduty = maxcol - 155;	 
-		blueduty = 0; 
-	} 
-	if ( adcval > 30 && adcval <= 85){//red to green 
-		redduty = maxcol - (adcval*3); 
-		greenduty = maxcol - redduty; 
-		blueduty = 0;
-	} 
-	if (adcval > 85 && adcval <= 170){//green to blue
-		greenduty = maxcol - (adcval*3); 
-		blueduty = maxcol - greenduty;
-		redduty = 0; 
-
-	} 
-	if (adcval > 170 && adcval <= 240){//blue to red  
-		blueduty = maxcol - (adcval*3);
-		redduty = maxcol - blueduty; 
-		greenduty = 0; 
-	}  
-	if (adcval >= 250){ 
-		redduty = maxcol; 
-		blueduty = 0; 
-		greenduty = 0;			
-	}
-
-} 
-*/ 
-
 void potenable(){ 
 //		_delay_us(1);
         if (adcval[1] <= 30){ //red 
@@ -128,10 +94,12 @@ void redlight(){
 	redduty = 255; 
 	greenduty = 0; 
 	blueduty = 0;
+	lightbuffer = 0;
+	
 } 
 
 void partylight(){ 
-	_delay_us(5); 
+  _delay_us(5); 
 	tempred = ( colourarray[i][0]);
 	tempgreen = ( colourarray[i][1]);
 	tempblue = ( colourarray[i][2]);       
@@ -158,7 +126,8 @@ void partylight(){
 int main (void) {
 	init(); 
 
-	while (1){ 
+	while (1){
+	  _delay_us(5);
 		if (partenable == 1){  
 			redduty = 0; 
 			greenduty = 0; 
@@ -227,8 +196,8 @@ ISR(ADC_vect){
                 channel = 1;
         }
         ADMUX = (ADMUX & 0b11000000) | channel;
-
 }
+
 ISR(TIM0_OVF_vect){ //update dutycycle value at end of PWM cycle
 	OCR0A = redduty;
 	OCR0B = greenduty;
@@ -246,7 +215,6 @@ ISR (PCINT1_vect){ //PCINT1 takes care of pins PCINT11:8
         }
         else {
                 partbut = 0;
-
         }
         if (redpress && redbut == 0){
                 partenable = 0;
@@ -263,6 +231,5 @@ ISR (PCINT1_vect){ //PCINT1 takes care of pins PCINT11:8
         }else {
                 redbut = 0;
         }
-
 }
 
