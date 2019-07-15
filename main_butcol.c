@@ -50,7 +50,6 @@ unsigned volatile int i = 0;
 unsigned int tempadc = 3; 
 unsigned int maxcol = 255; 
 
-
 int redbut = 0;     
 int redenable = 0;
 int partbut = 0;
