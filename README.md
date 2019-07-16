@@ -9,7 +9,9 @@ Not only that but in the schematic I included 3 switches due to the fact that ma
 
 For an added bonus, I am also planning to add an RGB led strip. This is not only for fun (party mode) or aesthetic lighting (color scrolling potentiometer), but for utility.
 
-Since red light is better for your eyes, especially at night , I thought it would be great to have a type of night mode where the RGB light goes red and the white led turns off. Thus great for working late night.
+Since red light is better for your eyes, especially at night , I thought it would be great to have a type of night mode where the RGB light goes red and the white led turns off. Thus great for working late night. 
+
+Schematic still a work in progress
 
 
 Hackaday: https://hackaday.io/project/164023-work-table-light 
