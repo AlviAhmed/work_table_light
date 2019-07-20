@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <util/delay.h>
 #include <avr/interrupt.h>
+
 #define numcolour 24
 #define redpress (~PINB) & (_BV(0)) //PB0 
 #define partpress (~PINB) & (_BV(1)) //PB1 
@@ -45,7 +46,7 @@ unsigned int curradc = 0;
 unsigned volatile int redduty = 0;
 unsigned volatile int greenduty = 0;
 unsigned volatile int blueduty = 0; 
-unsigned volatile int lightbuffer = 150;
+unsigned volatile int lightbuffer = 0;
 unsigned volatile int i = 0; 
 unsigned int tempadc = 3; 
 unsigned int maxcol = 255; 
@@ -60,7 +61,7 @@ unsigned int tempgreen;
 unsigned int tempblue;
 
 void potenable(){ 
-//		_delay_us(1);
+  _delay_us(1);
         if (adcval[1] <= 30){ //red 
                 redduty = maxcol;
                 greenduty = maxcol - 155;
@@ -121,12 +122,11 @@ void partylight(){
 }
 
 
-
 int main (void) {
 	init(); 
 
 	while (1){
-	  _delay_us(5);
+	  //_delay_us(1);
 		if (partenable == 1){  
 			redduty = 0; 
 			greenduty = 0; 
@@ -138,7 +138,6 @@ int main (void) {
 		while (redenable){   
 			redlight(); 
 		}     
-	        lightbuffer = adcval[2];
 		potenable();
 
 
@@ -195,6 +194,7 @@ ISR(ADC_vect){
                 channel = 1;
         }
         ADMUX = (ADMUX & 0b11000000) | channel;
+	lightbuffer = adcval[2];
 }
 
 ISR(TIM0_OVF_vect){ //update dutycycle value at end of PWM cycle
