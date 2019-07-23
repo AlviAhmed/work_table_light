@@ -193,7 +193,16 @@ ISR(ADC_vect){
         if (channel > 2){
                 channel = 1;
         }
-        ADMUX = (ADMUX & 0b11000000) | channel;
+	//channel 1 -> PA1 -> MUX0 -> xx0001 -> binary equivalent to 1
+	//channel 2 -> PA2 -> MUX1 -> xx0010 -> binary equivalent to 2
+	ADMUX = (ADMUX & 0b11000000) | channel; //clearing out all the
+	                                        //MUX bits in ADMUX register
+						//and only leaving behind
+						//the ref bits by
+	                                        //ANDING
+	
+	// updating the MUX channel by ORING with the channel number or can
+	// use the binary or can use the pin name
 	lightbuffer = adcval[2];
 }
 
