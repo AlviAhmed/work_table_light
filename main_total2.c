@@ -43,18 +43,19 @@ unsigned volatile int colourarray[numcolour][3] =
 	{255,82,13}, 
 	{232,34,1},
 }; 	  
-unsigned int adcval[3];  
+unsigned volatile int adcval[3];  
 unsigned volatile int  channel = 1;
 unsigned int curradc = 0;
 unsigned volatile int redduty = 0;
 unsigned volatile int greenduty = 0;
+
 unsigned volatile int blueduty = 0; 
 unsigned volatile int lightbuffer = 0;
 unsigned volatile int adc_val_1 = 0;
 unsigned volatile int adc_val_2 = 0;
 unsigned volatile int i = 0;
-unsigned int tempadc = 3; 
-unsigned int maxcol = 255; 
+unsigned volatile int tempadc = 3; 
+unsigned volatile int maxcol = 250; 
 
 unsigned volatile int redbut = 0;     
 unsigned volatile int redenable = 0;
@@ -66,7 +67,7 @@ unsigned int tempgreen;
 unsigned int tempblue;
 
 void potenable(){ 
-    _delay_us(1);
+  //    _delay_us(1);
      if (adcval[1] <= 30){ //red 
              redduty = maxcol;
              greenduty = maxcol - 155;
@@ -92,6 +93,26 @@ void potenable(){
               redduty = maxcol;
               blueduty = 0;
               greenduty = 0;
+     }
+}
+
+
+void lightpot(){ 
+  //    _delay_us(1);
+     if (adcval[2] <= 30){ //red
+       lightbuffer = 30;
+     }
+     else if ( adcval[2] > 30 && adcval[2] <= 85){//red to green
+       lightbuffer = 60;
+     }
+     else if (adcval[2] > 85 && adcval[2] <= 170){//green to blue
+       lightbuffer = 90;
+     }
+     else if (adcval[2] > 170 && adcval[2] <= 240){//blue to red
+       lightbuffer = 150;
+     }
+     else{
+       lightbuffer = 250;
      }
 }
 
@@ -163,39 +184,6 @@ int hsv_maxcomp(int red, int green, int blue){
   
 }
 
-void but_manual(){
-
-  		if ((partpress && partbut == 0 ) || (redpress && redbut == 0))	{
-		  _delay_ms(5);
-			    if (partpress &&  partbut == 0 ){
-				redenable = 0;
-				partenable = !partenable;//toggling value instead of LED 
-				partbut = 1;
-			    }
-			    else {
-				partbut = 0;
-			    }
-			    if (redpress && redbut == 0){
-				    partenable = 0;
-				    redenable = !redenable;
-				    redbut = 1;
-			    }
-			    else{
-				    redbut = 0;
-			    }
-			    if (partpress && redpress && partbut == 0 && redbut == 0){//if both buttons pressed, default to one of them
-			         redenable = 0;
-				 partenable = !partenable; 
-				 redbut = 1;
-				 
-			    }else {
-				    redbut = 0;
-			    }
-
-		}
-
-
-}
 
 int chrome(int value, int sat){
 
@@ -206,59 +194,45 @@ int chrome(int value, int sat){
 
 
 //******* For POT 1
-int adc_convo_1(){
+volatile int adc_convo_1(){
   // Make PA1 the channel of focus
   ADMUX = (ADMUX & 0b11000000) | 1;
   // Start the conversion
     ADCSRA |= (1 << ADSC);
     // Wait for it to finish
-    while (ADCSRA & (1 << ADSC));
- 
+    while (!(ADCSRA & (1 << ADIF)));
+    ADCSRA |= (1 << ADIF);
 return ADCH;
 }
 //**********
 //******* For POT 2
-int adc_convo_2(){
+volatile int adc_convo_2(){
   // Make PA1 the channel of focus
   ADMUX = (ADMUX & 0b11000000) | 2;
   // Start the conversion
     ADCSRA |= (1 << ADSC);
     // Wait for it to finish
-    while (ADCSRA & (1 << ADSC));
- 
+    while (!(ADCSRA & (1 << ADIF)));
+    ADCSRA |= (1 << ADIF);
 return ADCH;
 }
 //*********
 int main (void) {
-	init(); 
+	init();
+	  int temp = 0;
 	while (1){
-	  //_delay_us(1);
-	              but_manual();
-	  		adcval[1] = adc_convo_1();
-			adcval[2] = adc_convo_2();
-				if (partenable == 1){  
-				 			redduty = 0; 
-				 			greenduty = 0; 
-				 			blueduty = 0;
-							// test PORTA |= (1 << PA0);   
-					while (partenable){
-						partylight(); 
-					}
-				}
-				else {
-				  potenable();
-				}
-				//else {
-				//  PORTA &=~ (1 << PA0);  
-				//}
-				// test if (redenable == 1){
-				// test   PORTA |= (1 << PA1);
-				if ( redenable == 1){
-				  	redlight(); 
-				  }
-				else {
-				  potenable();
-				}
+	  temp = adc_convo_2();
+	adcval[1] = adc_convo_1();
+	  _delay_ms(1) ;
+	adcval[2] = adc_convo_2();
+	if (adcval[2] != temp+1 || adcval[2] != temp-1 || adcval[2] != temp + 2 || adcval[2] != temp - 2 || adcval[2] != temp) {
+		OCR1B = temp;
+	  }
+	  else {
+	    //	    adcval[2] = adcval[1] + 3;
+	    OCR1B = adcval[2];
+	  }
+	//lightpot();
 	// test else {
 	// test   PORTA &= ~ (1 << PA1); 
 	// test }
@@ -268,8 +242,7 @@ int main (void) {
 	// test else {
 	// test   PORTA &=~ (1 << PA2);
 	// test }
-				//potenable();
-		lightbuffer = adcval[2];
+		potenable();
 } 
 }
 
@@ -290,7 +263,7 @@ void init(){
 	TIMSK0 |= (1 << TOIE0); //Timer mask for Timer/Counter 0  
 	TCCR1A |= ( (1 << COM1A1) | (1 << WGM10) | (1 << WGM12) | (1 << COM1B1)); //OC1A, OC1B, fast pwm, 8bit
 	TIMSK1 |= (1 << TOIE1); //Timer mask for Timer/Counter 1
-	//pinint();
+	pinint();
 	ADCinit();
 	sei();
 	TCCR0B |= (1 << CS00); //Prescaler 1 Timer 0
@@ -306,15 +279,15 @@ PCMSK1 |= (1 << PCINT9) | (1 << PCINT8); //specifying the pins that
 void ADCinit(){  
 	ADMUX &=~ ((1 << REFS1) | (1 << REFS0));//Vcc as analog voltage
 						//reference
-	ADMUX |= (1 << MUX0); //Using pin ADC1 (PA1) 
-	ADCSRA |= (1 << ADPS1)|(1 << ADPS2)|(1 << ADEN); // enabling only
+	ADMUX |= (1 << MUX1); //Using pin ADC1 (PA1) 
+	ADCSRA |=(1 << ADPS1)|(1 << ADPS0)|(1 << ADEN); // enabling only
 							 // the reference
 							 // and the ADC
 							 // enable 
 	ADCSRB |= (1 << ADLAR); //left adjust bits, since working with 8bit
 				//fast pwm
 	// test ADCSRA &= ~ (1 << ADEN); 
-	DIDR0 |= (1 << ADC1D);
+	//DIDR0 |= (1 << ADC1D);
 	  /*Disables the digital buffer of the
 				   analog pin being used (ADC1D), reduces
 				   power consumption*/
@@ -323,10 +296,16 @@ ISR(TIM0_OVF_vect){ //update dutycycle value at end of PWM cycle
 	OCR0A = redduty;
 	OCR0B = greenduty;
 }
-ISR(TIM1_OVF_vect){ //update dutycycle value at end of PWM cycle 
+ISR(TIM1_OVF_vect){ //update dutycycle value at end of PWM cycle
         OCR1A = blueduty;  
-	OCR1B = lightbuffer;
 }
-//ISR (PCINT1_vect){ //PCINT1 takes care of pins PCINT11:8    
-//  // _delay_ms(1);
-//}
+ISR (PCINT1_vect){ //PCINT1 takes care of pins PCINT11:8    
+  //    _delay_ms(1);
+    if (partpress &&  partbut == 0 ){
+	partenable = !partenable;//toggling value instead of LED 
+	partbut = 1;
+    }
+    else {
+      partbut = 0;
+    }
+}
