@@ -45,12 +45,12 @@ unsigned volatile int colourarray[numcolour][3] =
 }; 	  
 unsigned volatile int adcval[3];  
 unsigned volatile int  channel = 1;
-unsigned int curradc = 0;
+
 unsigned volatile int redduty = 0;
 unsigned volatile int greenduty = 0;
-
 unsigned volatile int blueduty = 0; 
 unsigned volatile int lightbuffer = 0;
+
 unsigned volatile int adc_val_1 = 0;
 unsigned volatile int adc_val_2 = 0;
 unsigned volatile int i = 0;
@@ -68,31 +68,31 @@ unsigned int tempblue;
 
 void potenable(){ 
   //    _delay_us(1);
-     if (adcval[1] <= 30){ //red 
-             redduty = maxcol;
-             greenduty = maxcol - 155;
-             blueduty = 0;
-     }
-     else if ( adcval[1] > 30 && adcval[1] <= 85){//red to green 
+  //if (adcval[1] <= 5){ //red 
+  //        redduty = maxcol;
+  //        greenduty = maxcol - 155;
+  //        blueduty = 0;
+  //}
+      if ( adcval[1] > 5 && adcval[1] <= 85){//red to green 
               redduty = maxcol - (adcval[1]*3);
               greenduty = maxcol - redduty;
               blueduty = 0;
      }
      else if (adcval[1] > 85 && adcval[1] <= 170){//green to blue
-              greenduty = maxcol - (adcval[1]*3);
+              greenduty = maxcol - ((adcval[1] - 85)*3);
               blueduty = maxcol - greenduty;
               redduty = 0;
 
      }
-     else if (adcval[1] > 170 && adcval[1] <= 240){//blue to red  
-              blueduty = maxcol - (adcval[1]*3);
+     else if (adcval[1] > 170 && adcval[1] <= 250){//blue to red  
+              blueduty = maxcol - ((adcval[1] - 166)*3);
               redduty = maxcol - blueduty;
               greenduty = 0;
      }
      else{
               redduty = maxcol;
-              blueduty = 0;
               greenduty = 0;
+              blueduty = 0;
      }
 }
 
