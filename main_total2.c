@@ -10,9 +10,9 @@
 #include <util/delay.h>
 #include <avr/interrupt.h>
 
-#define numcolour 24
-#define redpress (~PINB) & (_BV(0)) //PB0 
-#define partpress (~PINB) & (_BV(1)) //PB1 
+#define numcolour 25
+#define redpress (~PINB) & (_BV(1)) //PB1
+#define partpress (~PINB) & (_BV(0)) //PB0
 
 
 unsigned volatile int colourarray[numcolour][3] =
@@ -116,16 +116,15 @@ void lightpot(){
      }
 }
 
-void redlight(){ 
-	redduty = 255; 
+void redlight(){
+	redduty = 250; 
 	greenduty = 0; 
 	blueduty = 0;
 	lightbuffer = 0;
-	
 } 
 
 void partylight(){ 
-  _delay_us(5); 
+  _delay_us(500); 
 	tempred = ( colourarray[i][0]);
 	tempgreen = ( colourarray[i][1]);
 	tempblue = ( colourarray[i][2]);       
@@ -141,7 +140,7 @@ void partylight(){
 
 	if ((redduty == tempred) && (greenduty == tempgreen) && (blueduty == tempblue)){
 		i++;
-		if (i > numcolour){
+		if (i > (numcolour - 1)){
 			i = 0;
 		}
 	}
@@ -167,7 +166,6 @@ int hsv_mincomp(int red, int green, int blue){
   
 }
 
-
 int hsv_maxcomp(int red, int green, int blue){
   
   int col_arr [3] = {red, green, blue};
@@ -184,14 +182,12 @@ int hsv_maxcomp(int red, int green, int blue){
   
 }
 
-
 int chrome(int value, int sat){
 
   int c = value * sat;
   return c;
   
 }
-
 
 //******* For POT 1
 volatile int adc_convo_1(){
@@ -221,6 +217,7 @@ int main (void) {
 	init();
 	  int temp = 0;
 	while (1){
+	  
 	  temp = adc_convo_2();
 	adcval[1] = adc_convo_1();
 	  _delay_ms(1) ;
@@ -229,21 +226,35 @@ int main (void) {
 		OCR1B = temp;
 	  }
 	  else {
-	    //	    adcval[2] = adcval[1] + 3;
 	    OCR1B = adcval[2];
 	  }
-	//lightpot();
-	// test else {
-	// test   PORTA &= ~ (1 << PA1); 
-	// test }
-	// test if (partenable == 0 && redenable == 0){
-	// test   PORTA |= (1 << PA2);
-	// test }
-	// test else {
-	// test   PORTA &=~ (1 << PA2);
-	// test }
-		potenable();
-} 
+	//potenable();
+
+	//********RED-MODE*******************
+	while(redenable == 1){
+	  DDRA &=~ (1 << PA5);
+	  redlight();
+	}
+	  DDRA |= (1 << PA5);
+	  potenable();
+	
+	//**************************
+	
+	//*********PARTY-MODE*****************
+	if (partenable == 1){
+	  DDRA &=~ (1 << PA5);
+	  redduty = 0;
+	  greenduty = 0;
+	  blueduty = 0;
+	  while (partenable){
+	    partylight();
+	  }
+	}else{
+	  DDRA |= (1 << PA5);
+	  potenable();
+	}
+	//**************************
+  } 
 }
 
 
@@ -254,9 +265,6 @@ void init(){
 	DDRA |= (1 << PA7) | (1 << PA6) | (1 << PA5); //OCOB,//OC1A
 						    ////respectively
 	// test  DDRA |= (1 << PA0) | (1 << PA1) | (1 << PA2); //enabling output of led 
-       DDRB &= ~ (1 << PB0) | (1 << PB1);   //enabling input on button 
-       PORTB |= (1 << PB0) | (1 << PB1); //tunring on internal
-					 //resistor
        //test    PORTA &=~  (1 << PA0) | (1 << PA1) | (1 << PA2);//initially off
        DDRA &=~ (1 << PA1) | (1 << PA2); //setting this pin an input kji
 	TCCR0A |= ( (1 << COM0A1) | (1 << COM0B1) | (1 << WGM01) | (1 << WGM00));// OCOA, OCOB, non-inverting, fast pwm 
@@ -270,7 +278,11 @@ void init(){
 	TCCR1B |= (1 << CS10); //Prescaler 1 Timer 1
 }  
 
-void pinint() { 
+void pinint() {
+  
+DDRB &= ~ (1 << PB0) | (1 << PB1);   //enabling input on button 
+PORTB |= (1 << PB0) | (1 << PB1); //tunring on internal
+					 //resistor
 GIMSK |= (1 << PCIE1); //enabling pin change interrupt
 PCMSK1 |= (1 << PCINT9) | (1 << PCINT8); //specifying the pins that
 					 //cause interrupt  (PB0 =>
@@ -299,13 +311,21 @@ ISR(TIM0_OVF_vect){ //update dutycycle value at end of PWM cycle
 ISR(TIM1_OVF_vect){ //update dutycycle value at end of PWM cycle
         OCR1A = blueduty;  
 }
-ISR (PCINT1_vect){ //PCINT1 takes care of pins PCINT11:8    
-  //    _delay_ms(1);
-    if (partpress &&  partbut == 0 ){
-	partenable = !partenable;//toggling value instead of LED 
-	partbut = 1;
-    }
-    else {
-      partbut = 0;
-    }
+ISR (PCINT1_vect){ //PCINT1 takes care of pins PCINT11:8
+  //  _delay_us(500);
+  if (redpress && redbut == 0){
+    partenable = 0;
+    redenable = !redenable;
+    redbut = 1;
+  }else {
+    redbut = 0;
+  }
+  
+  if (partpress && partbut == 0){
+    redenable = 0;
+    partenable = !partenable;
+    partbut = 1;
+  }else {
+    partbut = 0;
+  }
 }
