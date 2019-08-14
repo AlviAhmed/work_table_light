@@ -221,7 +221,7 @@ int main (void) {
 	  
 	  temp = adc_convo_2();
 	adcval[1] = adc_convo_1();
-	  _delay_ms(1) ;
+	  _delay_us(50) ;
 	adcval[2] = adc_convo_2();
 	if (adcval[2] != temp+1 || adcval[2] != temp-1 || adcval[2] != temp + 2 || adcval[2] != temp - 2 || adcval[2] != temp) {
 		OCR1B = temp;
@@ -274,10 +274,18 @@ void init(){
 	TIMSK1 |= (1 << TOIE1); //Timer mask for Timer/Counter 1
 	pinint();
 	ADCinit();
+	adcnoisecancellor();
 	sei();
 	TCCR0B |= (1 << CS00); //Prescaler 1 Timer 0
 	TCCR1B |= (1 << CS10); //Prescaler 1 Timer 1
-}  
+}
+
+void adcnoisecancellor(){
+
+  MCUCR |= (1 << SE) | (1 << SM0); //enabling sleep bit and adc noise cancellor
+
+  
+}
 
 void pinint() {
   
