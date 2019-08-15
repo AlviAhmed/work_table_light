@@ -15027,6 +15027,15 @@ modes of the work table light</text>
 <wire x1="251.46" y1="17.78" x2="251.46" y2="20.32" width="0.1524" layer="91"/>
 <wire x1="251.46" y1="20.32" x2="269.24" y2="20.32" width="0.1524" layer="91"/>
 <junction x="269.24" y="20.32"/>
+<pinref part="DZ2" gate="-1" pin="C"/>
+<wire x1="269.24" y1="5.08" x2="269.24" y2="7.62" width="0.1524" layer="91"/>
+<wire x1="269.24" y1="7.62" x2="287.02" y2="7.62" width="0.1524" layer="91"/>
+<wire x1="287.02" y1="7.62" x2="287.02" y2="5.08" width="0.1524" layer="91"/>
+<junction x="287.02" y="5.08"/>
+<pinref part="DZ1" gate="-1" pin="C"/>
+<wire x1="251.46" y1="5.08" x2="251.46" y2="7.62" width="0.1524" layer="91"/>
+<wire x1="251.46" y1="7.62" x2="269.24" y2="7.62" width="0.1524" layer="91"/>
+<junction x="269.24" y="7.62"/>
 </segment>
 </net>
 <net name="GND" class="0">
@@ -15394,12 +15403,30 @@ modes of the work table light</text>
 <segment>
 <pinref part="DZ1" gate="-3" pin="A"/>
 <wire x1="243.84" y1="30.48" x2="236.22" y2="30.48" width="0.1524" layer="91"/>
+<pinref part="DZ2" gate="-3" pin="A"/>
+<wire x1="261.62" y1="30.48" x2="261.62" y2="27.94" width="0.1524" layer="91"/>
+<wire x1="261.62" y1="27.94" x2="243.84" y2="27.94" width="0.1524" layer="91"/>
+<wire x1="243.84" y1="27.94" x2="243.84" y2="30.48" width="0.1524" layer="91"/>
+<junction x="243.84" y="30.48"/>
+<pinref part="DZ3" gate="-3" pin="A"/>
+<wire x1="279.4" y1="30.48" x2="279.4" y2="27.94" width="0.1524" layer="91"/>
+<wire x1="279.4" y1="27.94" x2="261.62" y2="27.94" width="0.1524" layer="91"/>
+<junction x="261.62" y="27.94"/>
 </segment>
 </net>
 <net name="N$4" class="0">
 <segment>
 <pinref part="DZ1" gate="-2" pin="A"/>
 <wire x1="243.84" y1="17.78" x2="236.22" y2="17.78" width="0.1524" layer="91"/>
+<pinref part="DZ2" gate="-2" pin="A"/>
+<wire x1="261.62" y1="17.78" x2="261.62" y2="15.24" width="0.1524" layer="91"/>
+<wire x1="261.62" y1="15.24" x2="243.84" y2="15.24" width="0.1524" layer="91"/>
+<wire x1="243.84" y1="15.24" x2="243.84" y2="17.78" width="0.1524" layer="91"/>
+<junction x="243.84" y="17.78"/>
+<pinref part="DZ3" gate="-2" pin="A"/>
+<wire x1="279.4" y1="17.78" x2="279.4" y2="15.24" width="0.1524" layer="91"/>
+<wire x1="279.4" y1="15.24" x2="261.62" y2="15.24" width="0.1524" layer="91"/>
+<junction x="261.62" y="15.24"/>
 </segment>
 </net>
 <net name="N$5" class="0">
