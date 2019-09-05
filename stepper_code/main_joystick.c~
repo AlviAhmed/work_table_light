@@ -17,4 +17,3 @@ void init(){
   DDRB |= (1 << PB3) | (1 << PB4);      
   PORTB |= (1 << PB3) | (1 << PB4);
 } 
-
