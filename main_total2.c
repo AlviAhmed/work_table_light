@@ -98,24 +98,24 @@ void potenable(){
 }
 
 
-void lightpot(){ 
-  //    _delay_us(1);
-     if (adcval[2] <= 30){ //red
-       lightbuffer = 30;
-     }
-     else if ( adcval[2] > 30 && adcval[2] <= 85){//red to green
-       lightbuffer = 60;
-     }
-     else if (adcval[2] > 85 && adcval[2] <= 170){//green to blue
-       lightbuffer = 90;
-     }
-     else if (adcval[2] > 170 && adcval[2] <= 240){//blue to red
-       lightbuffer = 150;
-     }
-     else{
-       lightbuffer = 250;
-     }
-}
+//void lightpot(){  //Not using this as of now, WAS A TEST
+//  //    _delay_us(1);
+//     if (adcval[2] <= 30){ //red
+//       lightbuffer = 30;
+//     }
+//     else if ( adcval[2] > 30 && adcval[2] <= 85){//red to green
+//       lightbuffer = 60;
+//     }
+//     else if (adcval[2] > 85 && adcval[2] <= 170){//green to blue
+//       lightbuffer = 90;
+//     }
+//     else if (adcval[2] > 170 && adcval[2] <= 240){//blue to red
+//       lightbuffer = 150;
+//     }
+//     else{
+//       lightbuffer = 250;
+//     }
+//}
 
 void redlight(){
 	redduty = 250; 
@@ -125,7 +125,7 @@ void redlight(){
 } 
 
 void partylight(){ 
-  _delay_us(500); 
+        _delay_us(500); 
 	tempred = ( colourarray[i][0]);
 	tempgreen = ( colourarray[i][1]);
 	tempblue = ( colourarray[i][2]);       
@@ -151,44 +151,44 @@ void partylight(){
 //** THE RANGE OF [0,1]
 //** Hue should have range of [0,360]
 
-int hsv_mincomp(int red, int green, int blue){
-  
-  int col_arr [3] = {red, green, blue};
-  int i;
-  int min = col_arr[0]; //keeps track of which value is the smallest
-  int pos = 0; //keeps track of which RGB component is the smallest
-  for (i = 1; i < 3; i ++ ) {
-    if (min > col_arr[i]){
-      min = col_arr[i];
-      pos = i;
-    }
-  }
-  return pos;
-  
-}
-
-int hsv_maxcomp(int red, int green, int blue){
-  
-  int col_arr [3] = {red, green, blue};
-  int i;
-  int max = col_arr[0]; //keeps track of which value is the smallest
-  int pos = 0; //keeps track of which RGB component is the smallest
-  for (i = 1; i < 3; i ++ ) {
-    if (max < col_arr[i]){
-      max = col_arr[i];
-      pos = i;
-    }
-  }
-  return pos;
-  
-}
-
-int chrome(int value, int sat){
-
-  int c = value * sat;
-  return c;
-  
-}
+//int hsv_mincomp(int red, int green, int blue){
+//  
+//  int col_arr [3] = {red, green, blue};
+//  int i;
+//  int min = col_arr[0]; //keeps track of which value is the smallest
+//  int pos = 0; //keeps track of which RGB component is the smallest
+//  for (i = 1; i < 3; i ++ ) {
+//    if (min > col_arr[i]){
+//      min = col_arr[i];
+//      pos = i;
+//    }
+//  }
+//  return pos;
+//  
+//}
+//
+//int hsv_maxcomp(int red, int green, int blue){
+//  
+//  int col_arr [3] = {red, green, blue};
+//  int i;
+//  int max = col_arr[0]; //keeps track of which value is the smallest
+//  int pos = 0; //keeps track of which RGB component is the smallest
+//  for (i = 1; i < 3; i ++ ) {
+//    if (max < col_arr[i]){
+//      max = col_arr[i];
+//      pos = i;
+//    }
+//  }
+//  return pos;
+//  
+//}
+//
+//int chrome(int value, int sat){
+//
+//  int c = value * sat;
+//  return c;
+//  
+//}
 
 //******* For POT 1
 volatile int adc_convo_1(){
@@ -218,29 +218,24 @@ int main (void) {
 	init();
 	  int temp = 0;
 	while (1){
-	  
 	  temp = adc_convo_2();
 	adcval[1] = adc_convo_1();
-	  _delay_us(50) ;
+	  _delay_us(10) ;
 	adcval[2] = adc_convo_2();
 	if (adcval[2] != temp+1 || adcval[2] != temp-1 || adcval[2] != temp + 2 || adcval[2] != temp - 2 || adcval[2] != temp) {
-		OCR1B = temp;
+		lightbuffer = temp;
 	  }
 	  else {
-	    OCR1B = adcval[2];
+	    lightbuffer = adcval[2];
 	  }
-	//potenable();
-
 	//********RED-MODE*******************
 	while(redenable == 1){
-	  DDRA &=~ (1 << PA5);
 	  redlight();
+	  DDRA &=~ (1 << PA5);
 	}
 	  DDRA |= (1 << PA5);
 	  potenable();
-	
 	//**************************
-	
 	//*********PARTY-MODE*****************
 	if (partenable == 1){
 	  DDRA &=~ (1 << PA5);
@@ -257,9 +252,6 @@ int main (void) {
 	//**************************
   } 
 }
-
-
-
 
 void init(){
 	DDRB |=  (1 << PB2); //OCOA 
@@ -281,10 +273,7 @@ void init(){
 }
 
 void adcnoisecancellor(){
-
   MCUCR |= (1 << SE) | (1 << SM0); //enabling sleep bit and adc noise cancellor
-
-  
 }
 
 void pinint() {
@@ -318,13 +307,15 @@ ISR(TIM0_OVF_vect){ //update dutycycle value at end of PWM cycle
 	OCR0B = greenduty;
 }
 ISR(TIM1_OVF_vect){ //update dutycycle value at end of PWM cycle
-        OCR1A = blueduty;  
+        OCR1A = blueduty;
+	OCR1B = lightbuffer;
 }
 ISR (PCINT1_vect){ //PCINT1 takes care of pins PCINT11:8
-  //  _delay_us(500);
+    _delay_us(500);
   if (redpress && redbut == 0){
     partenable = 0;
     redenable = !redenable;
+    //DDRA &=~ (1 << PA5);
     redbut = 1;
   }else {
     redbut = 0;

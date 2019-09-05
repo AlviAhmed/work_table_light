@@ -1,0 +1,31 @@
+#define F_CPU 1000000UL
+#include <avr/io.h>
+#include <stdio.h>
+#include <util/delay.h>
+#include <avr/interrupt.h>
+
+int main (void) { 
+	init();
+    	while (1)  
+        { 	     
+//		PORTB |= (1 << PB0);    
+
+		PORTB = (PORTB & 0x00) | 0x08; 
+		_delay_ms(100);
+		PORTB = (PORTB & 0x00) | 0x04;
+		_delay_ms(100);
+		PORTB = (PORTB & 0x00) | 0x02;
+		_delay_ms(100);
+		PORTB = (PORTB & 0x00) | 0x01; 
+		_delay_ms(100);
+		PORTB &=~ 0x0F;
+		_delay_ms(1000);
+    	}
+     }
+void init(){  
+//	DDRB |= (1 << PB4);     
+//	DDRB |= (1 << PB3)|(1 << PB2)|(1 << PB1)|(1 << PB0); 
+	DDRB |= 0x0F;
+//	PORTB |= (1 << PB4);
+} 
+
