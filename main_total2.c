@@ -97,31 +97,11 @@ void potenable(){
      }
 }
 
-
-//void lightpot(){  //Not using this as of now, WAS A TEST
-//  //    _delay_us(1);
-//     if (adcval[2] <= 30){ //red
-//       lightbuffer = 30;
-//     }
-//     else if ( adcval[2] > 30 && adcval[2] <= 85){//red to green
-//       lightbuffer = 60;
-//     }
-//     else if (adcval[2] > 85 && adcval[2] <= 170){//green to blue
-//       lightbuffer = 90;
-//     }
-//     else if (adcval[2] > 170 && adcval[2] <= 240){//blue to red
-//       lightbuffer = 150;
-//     }
-//     else{
-//       lightbuffer = 250;
-//     }
-//}
-
 void redlight(){
-	redduty = 250; 
-	greenduty = 0; 
+	redduty = 0; 
+	greenduty = 50; 
 	blueduty = 0;
-	lightbuffer = 0;
+	OCR1B = 0;
 } 
 
 void partylight(){ 
@@ -223,10 +203,11 @@ int main (void) {
 	  _delay_us(10) ;
 	adcval[2] = adc_convo_2();
 	if (adcval[2] != temp+1 || adcval[2] != temp-1 || adcval[2] != temp + 2 || adcval[2] != temp - 2 || adcval[2] != temp) {
-		lightbuffer = temp;
+		OCR1B = temp;
 	  }
 	  else {
-	    lightbuffer = adcval[2];
+	    OCR1B = adcval[2]; //initially changed position of the update of the lights, test if any difference or if it
+	    // fixes the glitches
 	  }
 	//********RED-MODE*******************
 	while(redenable == 1){
@@ -273,7 +254,7 @@ void init(){
 }
 
 void adcnoisecancellor(){
-  MCUCR |= (1 << SE) | (1 << SM0); //enabling sleep bit and adc noise cancellor
+  //  MCUCR |= (1 << SE) | (1 << SM0); //enabling sleep bit and adc noise cancellor
 }
 
 void pinint() {
@@ -308,7 +289,7 @@ ISR(TIM0_OVF_vect){ //update dutycycle value at end of PWM cycle
 }
 ISR(TIM1_OVF_vect){ //update dutycycle value at end of PWM cycle
         OCR1A = blueduty;
-	OCR1B = lightbuffer;
+	//	OCR1B = lightbuffer; 
 }
 ISR (PCINT1_vect){ //PCINT1 takes care of pins PCINT11:8
     _delay_us(500);
