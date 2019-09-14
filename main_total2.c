@@ -69,12 +69,12 @@ unsigned int tempblue;
 
 void potenable(){ 
   //    _delay_us(1);
-  //if (adcval[1] <= 5){ //red 
-  //        redduty = maxcol;
-  //        greenduty = maxcol - 155;
-  //        blueduty = 0;
-  //}
-      if ( adcval[1] > 5 && adcval[1] <= 85){//red to green 
+    if (adcval[1] <= 5){ //red 
+	    redduty = 250;
+	    greenduty = 0;
+	    blueduty = 0;
+    }
+    else  if ( adcval[1] > 5 && adcval[1] <= 85){//red to green 
               redduty = maxcol - (adcval[1]*3);
               greenduty = maxcol - redduty;
               blueduty = 0;
@@ -85,13 +85,13 @@ void potenable(){
               redduty = 0;
 
      }
-     else if (adcval[1] > 170 && adcval[1] <= 250){//blue to red  
+     else if (adcval[1] > 170 && adcval[1] <= 240){//blue to red  
               blueduty = maxcol - ((adcval[1] - 166)*3);
               redduty = maxcol - blueduty;
               greenduty = 0;
      }
      else{
-              redduty = maxcol;
+              redduty = 0;
               greenduty = 0;
               blueduty = 0;
      }
@@ -200,7 +200,7 @@ int main (void) {
 	while (1){
 	  temp = adc_convo_2();
 	adcval[1] = adc_convo_1();
-	  _delay_us(10) ;
+	//		_delay_us(10) ;
 	adcval[2] = adc_convo_2();
 	if (adcval[2] != temp+1 || adcval[2] != temp-1 || adcval[2] != temp + 2 || adcval[2] != temp - 2 || adcval[2] != temp) {
 		OCR1B = temp;
@@ -289,14 +289,13 @@ ISR(TIM0_OVF_vect){ //update dutycycle value at end of PWM cycle
 }
 ISR(TIM1_OVF_vect){ //update dutycycle value at end of PWM cycle
         OCR1A = blueduty;
-	//	OCR1B = lightbuffer; 
+	//OCR1B = lightbuffer; 
 }
 ISR (PCINT1_vect){ //PCINT1 takes care of pins PCINT11:8
-    _delay_us(500);
+  //  _delay_us(500);
   if (redpress && redbut == 0){
     partenable = 0;
     redenable = !redenable;
-    //DDRA &=~ (1 << PA5);
     redbut = 1;
   }else {
     redbut = 0;
