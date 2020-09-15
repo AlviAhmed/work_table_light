@@ -23,7 +23,7 @@ late night.
 
 * Schematic (In Progress) 
 
-[[file:images/wrk_schematic.jpg]]
+[[file:images/wrk_schematic.png]]
 
 
 
