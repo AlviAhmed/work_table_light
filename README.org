@@ -1,0 +1,42 @@
+#+LaTeX_CLASS: mycustom 
+
+#+TITLE: Work Table Light
+#+AUTHOR: Alvi Ahmed
+
+*Status:* Ongoing
+*Type:* Personal Project  
+
+* Overview
+
+The goal of this project was to learn more about ADC as well create a custom and unique work table light since I need a light that can cover my whole work table as well as have other functions that I need.
+
+A table light must obviously be bright, therefore  white led strips for the main lighting which can be dimmed using a dimmer switch.
+
+Not only that but in the schematic, I included 3 switches due to the
+fact that I often don't need my whole table to be lit up, sometimes only portions. Therefore I give myself the choice to light up whole table or just a portion(s) of my table.
+
+For an added bonus, I am also planning to add an RGB led strip. This is not only for aesthetic lighting (color scrolling potentiometer), but for utility.
+Since green light is better for your eyes in dark environements. I
+thought it would be great to have a type of night mode where the RGB
+light goes green and the white led turns off. Thus great for working
+late night.  
+
+* Schematic (In Progress) 
+
+[[file:images/wrk_schematic.jpg]]
+
+
+
+* Demo of the Rough Prototype  
+
+ Video of the work table light in action: [[https://youtu.be/-nM5emqcyaw]] 
+
+[[file:images/wrk_green.jpg]]
+[[file:images/wrk_blue.jpg]]
+[[file:images/wrk_red.jpg]]
+[[file:images/wrk_norm.jpg]]
+
+
+
+
+
