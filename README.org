@@ -6,6 +6,8 @@
 *Status:* Ongoing
 *Type:* Personal Project  
 
+For more details and info: https://hackaday.io/project/164023-work-table-light
+
 * Overview
 
 The goal of this project was to learn more about ADC as well create a custom and unique work table light since I need a light that can cover my whole work table as well as have other functions that I need.
