@@ -6,7 +6,6 @@
 *Status:* Ongoing
 *Type:* Personal Project  
 
-For more details and info: https://hackaday.io/project/164023-work-table-light
 
 * Overview
 
@@ -31,7 +30,7 @@ late night.
 
 * Demo of the Rough Prototype  
 
- Video of the work table light in action: [[https://youtu.be/-nM5emqcyaw]] 
+ *Video of the work table light in action:* [[https://youtu.be/-nM5emqcyaw]] 
 
 [[file:images/wrk_green.jpg]]
 [[file:images/wrk_blue.jpg]]
@@ -42,3 +41,6 @@ late night.
 
 
 
+
+
+For more details and info: https://hackaday.io/project/164023-work-table-light
