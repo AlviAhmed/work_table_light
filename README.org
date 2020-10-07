@@ -17,11 +17,11 @@ Not only that but in the schematic, I included 3 switches due to the
 fact that I often don't need my whole table to be lit up, sometimes only portions. Therefore I give myself the choice to light up whole table or just a portion(s) of my table.
 
 For an added bonus, I am also planning to add an RGB led strip. This is not only for aesthetic lighting (color scrolling potentiometer), but for utility.
-Since green light is better for your eyes in dark environements. I
+Since green light is better for your eyes in dark environments. I
 thought it would be great to have a type of night mode where the RGB
 light goes green and the white led turns off. Thus great for working
 late night.  
-
+	
 * Schematic (In Progress) 
 
 [[file:images/wrk_schematic.png]]
@@ -44,3 +44,4 @@ late night.
 
 
 For more details and info: https://hackaday.io/project/164023-work-table-light
+
